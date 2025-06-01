@@ -29,6 +29,9 @@ importers:
       bcryptjs:
         specifier: ^3.0.2
         version: 3.0.2
+      lumepay-sdk:
+        specifier: ^1.0.5
+        version: 1.0.5
       next:
         specifier: 15.3.3
         version: 15.3.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1486,6 +1489,9 @@ packages:
   lru-cache@6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
+
+  lumepay-sdk@1.0.5:
+    resolution: {integrity: sha512-ocvB/n5cdtk5Cn9/lsqCl6Qtk47rS3L9YhHolyU4vkpI8nu0hdEk7zQFB5sbvAicIIkeLOocDnUhT2lYvMh0fg==}
 
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
@@ -3523,6 +3529,12 @@ snapshots:
   lru-cache@6.0.0:
     dependencies:
       yallist: 4.0.0
+
+  lumepay-sdk@1.0.5:
+    dependencies:
+      axios: 1.9.0
+    transitivePeerDependencies:
+      - debug
 
   magic-string@0.30.17:
     dependencies:
