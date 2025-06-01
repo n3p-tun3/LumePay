@@ -11,6 +11,11 @@ function generateApiKey(): string {
   return `lume_${crypto.randomBytes(32).toString('hex')}`;
 }
 
+// Helper to validate bank settings
+function validateBankSettings(settings: any): boolean {
+  return settings && settings.bankAccount && settings.bankName === 'CBE';
+}
+
 // Create API key
 export async function POST(req: Request) {
   try {
@@ -25,13 +30,44 @@ export async function POST(req: Request) {
 
     const { name } = await req.json();
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
+      where: { email: session.user.email },
+      select: {
+        id: true,
+        name: true,
+        settings: true
+      }
     });
 
     if (!user) {
       return NextResponse.json(
         { error: "User not found" },
         { status: 404 }
+      );
+    }
+
+    // Check if user has configured bank settings
+    if (!validateBankSettings(user.settings)) {
+      return NextResponse.json(
+        { 
+          error: "Bank account details not configured",
+          message: "Please configure your bank account details in settings before creating an API key"
+        },
+        { status: 400 }
+      );
+    }
+
+    // Check if user already has an API key
+    const existingKey = await prisma.apiKey.findFirst({
+      where: { userId: user.id }
+    });
+
+    if (existingKey) {
+      return NextResponse.json(
+        { 
+          error: "API key already exists",
+          message: "You already have an API key. You can manage it in the API Key section."
+        },
+        { status: 400 }
       );
     }
 
@@ -70,7 +106,24 @@ export async function GET(req: Request) {
     }
 
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
+      where: { email: session.user.email },
+      include: {
+        apiKeys: {
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            name: true,
+            key: true,
+            remainingCredits: true,
+            enabled: true,
+            rateLimitEnabled: true,
+            rateLimitMax: true,
+            lastUsedAt: true,
+            createdAt: true,
+            updatedAt: true
+          }
+        }
+      }
     });
 
     if (!user) {
@@ -80,22 +133,7 @@ export async function GET(req: Request) {
       );
     }
 
-    const apiKeys = await prisma.apiKey.findMany({
-      where: { userId: user.id },
-      select: {
-        id: true,
-        name: true,
-        remainingCredits: true,
-        enabled: true,
-        rateLimitEnabled: true,
-        rateLimitMax: true,
-        lastUsedAt: true,
-        createdAt: true,
-        updatedAt: true
-      }
-    });
-
-    return NextResponse.json({ apiKeys });
+    return NextResponse.json({ apiKeys: user.apiKeys });
   } catch (error) {
     console.error("Error listing API keys:", error);
     return NextResponse.json(
