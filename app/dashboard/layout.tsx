@@ -2,7 +2,7 @@ import { HomeIcon, CreditCardIcon, KeyIcon, Cog6ToothIcon } from '@heroicons/rea
 import Link from 'next/link';
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "../api/auth/auth.config";
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },

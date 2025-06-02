@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "../../api/auth/[...nextauth]/route";
+import { authOptions } from "../../api/auth/auth.config";
 // import { PrismaClient } from "../../../generated/prisma";
 import { PrismaClient } from "@/app/generated/prisma";
 import ApiKeyManager from "./ApiKeyManager";

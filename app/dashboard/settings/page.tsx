@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "../../api/auth/[...nextauth]/route";
+import { authOptions } from "../../api/auth/auth.config";
 import { PrismaClient } from "@/app/generated/prisma";
 import BankSettingsForm from "./BankSettingsForm";
 import NameSettingsForm from "./NameSettingsForm";
