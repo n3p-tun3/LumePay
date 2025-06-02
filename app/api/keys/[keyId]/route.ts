@@ -7,8 +7,8 @@ const prisma = new PrismaClient();
 
 // Get API key details
 export async function GET(
-  req: Request,
-  { params }: { params: { keyId: string } }
+  request: Request,
+  context: { params: { keyId: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -33,7 +33,7 @@ export async function GET(
 
     const apiKey = await prisma.apiKey.findFirst({
       where: {
-        id: params.keyId,
+        id: context.params.keyId,
         userId: user.id
       },
       select: {
@@ -68,8 +68,8 @@ export async function GET(
 
 // Update API key
 export async function PATCH(
-  req: Request,
-  { params }: { params: { keyId: string } }
+  request: Request,
+  context: { params: { keyId: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -92,11 +92,11 @@ export async function PATCH(
       );
     }
 
-    const { name, enabled, rateLimitEnabled, rateLimitMax } = await req.json();
+    const { name, enabled, rateLimitEnabled, rateLimitMax } = await request.json();
 
     const apiKey = await prisma.apiKey.update({
       where: {
-        id: params.keyId,
+        id: context.params.keyId,
         userId: user.id
       },
       data: {
@@ -130,8 +130,8 @@ export async function PATCH(
 
 // Delete API key
 export async function DELETE(
-  req: Request,
-  { params }: { params: { keyId: string } }
+  request: Request,
+  context: { params: { keyId: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -156,7 +156,7 @@ export async function DELETE(
 
     await prisma.apiKey.delete({
       where: {
-        id: params.keyId,
+        id: context.params.keyId,
         userId: user.id
       }
     });
