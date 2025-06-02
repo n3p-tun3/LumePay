@@ -16,6 +16,7 @@
     "@types/bcryptjs": "^3.0.0",
     "axios": "^1.9.0",
     "bcryptjs": "^3.0.2",
+    "date-fns": "^4.1.0",
     "lumepay-sdk": "^1.0.5",
     "next": "15.3.3",
     "next-auth": "^4.24.11",
