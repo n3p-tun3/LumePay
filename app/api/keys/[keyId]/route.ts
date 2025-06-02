@@ -13,10 +13,7 @@ type RouteContext = {
 };
 
 // Get API key details
-export async function GET(
-  request: NextRequest,
-  { params }: RouteContext
-) {
+export async function GET(request, { params }) {
   try {
     const session = await getServerSession(authOptions);
     
@@ -74,10 +71,7 @@ export async function GET(
 }
 
 // Update API key
-export async function PATCH(
-  request: NextRequest,
-  { params }: RouteContext
-) {
+export async function PATCH(request, { params }) {
   try {
     const session = await getServerSession(authOptions);
     
@@ -136,10 +130,7 @@ export async function PATCH(
 }
 
 // Delete API key
-export async function DELETE(
-  request: NextRequest,
-  { params }: RouteContext
-) {
+export async function DELETE(request, { params }) {
   try {
     const session = await getServerSession(authOptions);
     
