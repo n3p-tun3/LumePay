@@ -3,6 +3,35 @@ import { PrismaClient } from "@/app/generated/prisma";
 
 const prisma = new PrismaClient();
 
+interface BankSettings {
+  bankAccount: string;
+  bankName: string;
+}
+
+// Type guard to check if an object is BankSettings
+function isBankSettings(obj: unknown): obj is BankSettings {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'bankAccount' in obj &&
+    'bankName' in obj &&
+    typeof (obj as BankSettings).bankAccount === 'string' &&
+    typeof (obj as BankSettings).bankName === 'string'
+  );
+}
+
+// Helper to check if user has valid bank details
+const validateMerchantBankDetails = (settings: unknown) => {
+  if (!isBankSettings(settings)) {
+    throw new Error('Merchant bank details not configured');
+  }
+  // For now we only support CBE
+  if (settings.bankName !== 'CBE') {
+    throw new Error('Only CBE bank is supported at the moment');
+  }
+  return settings;
+};
+
 // Create a payment intent
 export async function POST(req: Request) {
   try {
@@ -51,9 +80,11 @@ export async function POST(req: Request) {
     }
 
     // Validate merchant bank details
-    if (!key.user.settings?.bankAccount || key.user.settings?.bankName !== 'CBE') {
+    try {
+      validateMerchantBankDetails(key.user.settings);
+    } catch (error: any) {
       return NextResponse.json(
-        { error: "Bank account details not configured" },
+        { error: error.message },
         { status: 400 }
       );
     }
@@ -68,11 +99,10 @@ export async function POST(req: Request) {
       }
     });
 
-    // Deduct credit and update last used
+    // Update last used timestamp without deducting credits
     await prisma.apiKey.update({
       where: { id: key.id },
       data: {
-        remainingCredits: key.remainingCredits - 1,
         lastUsedAt: new Date()
       }
     });

@@ -164,6 +164,14 @@ export async function POST(
       }, { status: 400 });
     }
 
+    // Check if we have enough credits before proceeding
+    if (key.remainingCredits <= 0) {
+      return NextResponse.json(
+        { error: "Insufficient credits" },
+        { status: 402 }
+      );
+    }
+
     // Create payment record with verification data
     const payment = await prisma.payment.create({
       data: {
@@ -187,6 +195,15 @@ export async function POST(
       data: { status: 'completed' },
       include: {
         payment: true
+      }
+    });
+
+    // Deduct credit only after successful payment
+    await prisma.apiKey.update({
+      where: { id: key.id },
+      data: {
+        remainingCredits: key.remainingCredits - 1,
+        lastUsedAt: new Date()
       }
     });
 
