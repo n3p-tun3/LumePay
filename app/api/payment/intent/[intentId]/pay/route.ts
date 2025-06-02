@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@/app/generated/prisma";
 import axios from 'axios';

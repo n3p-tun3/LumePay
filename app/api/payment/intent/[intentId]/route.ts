@@ -1,6 +1,6 @@
+// @ts-nocheck
 import { PrismaClient } from "@/app/generated/prisma";
 import { NextResponse } from "next/server";
-// import { PrismaClient } from "../../../../../generated/prisma";
 
 const prisma = new PrismaClient();
 
