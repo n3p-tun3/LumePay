@@ -1,14 +1,20 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { PrismaClient } from "@/app/generated/prisma";
 import { authOptions } from "@/app/api/auth/auth.config";
 
 const prisma = new PrismaClient();
 
+type RouteContext = {
+  params: {
+    keyId: string;
+  };
+};
+
 // Get API key details
 export async function GET(
-  request: Request,
-  context: { params: { keyId: string } }
+  request: NextRequest,
+  { params }: RouteContext
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -33,7 +39,7 @@ export async function GET(
 
     const apiKey = await prisma.apiKey.findFirst({
       where: {
-        id: context.params.keyId,
+        id: params.keyId,
         userId: user.id
       },
       select: {
@@ -68,8 +74,8 @@ export async function GET(
 
 // Update API key
 export async function PATCH(
-  request: Request,
-  context: { params: { keyId: string } }
+  request: NextRequest,
+  { params }: RouteContext
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -96,7 +102,7 @@ export async function PATCH(
 
     const apiKey = await prisma.apiKey.update({
       where: {
-        id: context.params.keyId,
+        id: params.keyId,
         userId: user.id
       },
       data: {
@@ -130,8 +136,8 @@ export async function PATCH(
 
 // Delete API key
 export async function DELETE(
-  request: Request,
-  context: { params: { keyId: string } }
+  request: NextRequest,
+  { params }: RouteContext
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -156,7 +162,7 @@ export async function DELETE(
 
     await prisma.apiKey.delete({
       where: {
-        id: context.params.keyId,
+        id: params.keyId,
         userId: user.id
       }
     });
