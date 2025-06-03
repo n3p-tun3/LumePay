@@ -82,57 +82,59 @@ export default function ApiKeyManager({ initialApiKey }: ApiKeyManagerProps) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="font-medium text-gray-900">API Key</h3>
-          <div className="flex items-center space-x-2">
+      <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">API Key</h3>
+          <div className="flex items-center space-x-3">
             <button
               onClick={toggleKeyVisibility}
-              className="text-sm text-gray-700 hover:text-gray-900"
+              className="text-sm font-medium text-gray-900 hover:text-gray-700"
             >
               {showKey ? 'Hide' : 'Show'}
             </button>
             <button
               onClick={copyToClipboard}
-              className="text-sm text-blue-700 hover:text-blue-800"
+              className="text-sm font-medium text-blue-600 hover:text-blue-800"
             >
               Copy
             </button>
           </div>
         </div>
-        <div className="font-mono text-sm bg-white p-3 rounded border border-gray-200 break-all text-gray-900">
+        <div className="font-mono text-sm bg-gray-50 p-4 rounded-lg border border-gray-200 break-all text-gray-900">
           {showKey ? apiKey.key : '•'.repeat(apiKey.key.length)}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-medium text-gray-900 mb-2">Credits</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white p-6 rounded-lg border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Credits</h3>
           <div className="flex items-baseline">
-            <span className="text-2xl font-bold text-gray-900">{apiKey.remainingCredits}</span>
-            <span className="text-gray-700 ml-2">remaining</span>
+            <span className="text-3xl font-bold text-gray-900">{apiKey.remainingCredits}</span>
+            <span className="text-base font-medium text-gray-700 ml-2">remaining</span>
           </div>
         </div>
 
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-medium text-gray-900 mb-2">Rate Limit</h3>
+        <div className="bg-white p-6 rounded-lg border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Rate Limit</h3>
           <div className="flex items-baseline">
-            <span className="text-2xl font-bold text-gray-900">{apiKey.rateLimitMax}</span>
-            <span className="text-gray-700 ml-2">requests per day</span>
+            <span className="text-3xl font-bold text-gray-900">{apiKey.rateLimitMax}</span>
+            <span className="text-base font-medium text-gray-700 ml-2">requests/day</span>
           </div>
         </div>
 
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-medium text-gray-900 mb-2">Status</h3>
+        <div className="bg-white p-6 rounded-lg border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Status</h3>
           <div className="flex items-center">
-            <span className={`inline-block w-2 h-2 rounded-full mr-2 ${apiKey.enabled ? 'bg-green-500' : 'bg-red-500'}`} />
-            <span className="text-gray-900">{apiKey.enabled ? 'Active' : 'Disabled'}</span>
+            <span className={`inline-block w-3 h-3 rounded-full mr-2 ${apiKey.enabled ? 'bg-green-500' : 'bg-red-500'}`} />
+            <span className="text-base font-medium text-gray-900">
+              {apiKey.enabled ? 'Active' : 'Disabled'}
+            </span>
           </div>
         </div>
 
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-medium text-gray-900 mb-2">Last Used</h3>
-          <div className="text-gray-700">
+        <div className="bg-white p-6 rounded-lg border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Last Used</h3>
+          <div className="text-base font-medium text-gray-900">
             {apiKey.lastUsedAt 
               ? new Date(apiKey.lastUsedAt).toLocaleString()
               : 'Never'}
@@ -140,13 +142,13 @@ export default function ApiKeyManager({ initialApiKey }: ApiKeyManagerProps) {
         </div>
       </div>
 
-      <div className="flex justify-end space-x-4">
+      <div className="flex flex-col sm:flex-row gap-4">
         <button
           onClick={() => setApiKey({ ...apiKey, enabled: !apiKey.enabled })}
-          className={`px-4 py-2 rounded-lg ${
+          className={`flex-1 px-6 py-3 rounded-lg font-medium ${
             apiKey.enabled
-              ? 'bg-red-100 text-red-800 hover:bg-red-200'
-              : 'bg-green-100 text-green-800 hover:bg-green-200'
+              ? 'bg-red-50 text-red-800 hover:bg-red-100'
+              : 'bg-green-50 text-green-800 hover:bg-green-100'
           }`}
         >
           {apiKey.enabled ? 'Disable Key' : 'Enable Key'}
@@ -154,7 +156,7 @@ export default function ApiKeyManager({ initialApiKey }: ApiKeyManagerProps) {
         <button
           onClick={createApiKey}
           disabled={isCreating}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isCreating ? 'Creating...' : 'Regenerate Key'}
         </button>

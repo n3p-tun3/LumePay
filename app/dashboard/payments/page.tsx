@@ -8,20 +8,10 @@ import { toast } from 'sonner';
 interface PaymentIntent {
   id: string;
   amount: number;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
+  status: string;
   customerEmail: string;
   createdAt: string;
   expiresAt: string;
-  payment?: {
-    transactionId: string;
-    status: string;
-    verificationData?: {
-      payer: string;
-      amount: string;
-      date: string;
-      receiver: string;
-    };
-  };
 }
 
 export default function PaymentsPage() {
@@ -90,38 +80,39 @@ export default function PaymentsPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
           <h1 className="text-2xl font-bold text-gray-900">Payment Intents</h1>
-          <div className="text-sm text-gray-500">
+          <div className="text-sm font-medium text-gray-700">
             Total: {intents.length} intents
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        {/* Desktop table view */}
+        <div className="hidden md:block bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                     Intent ID
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                     Amount
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                     Status
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                     Customer
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                     Created
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                     Expires
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Payment Details
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                    Details
                   </th>
                 </tr>
               </thead>
@@ -139,40 +130,58 @@ export default function PaymentsPage() {
                         {intent.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {intent.customerEmail}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {formatDate(intent.createdAt)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {formatDate(intent.expiresAt)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {intent.payment ? (
-                        <div className="space-y-1">
-                          <div>Transaction: {intent.payment.transactionId}</div>
-                          {intent.payment.verificationData && (
-                            <>
-                              <div>Payer: {intent.payment.verificationData.payer}</div>
-                              <div>Date: {formatDate(intent.payment.verificationData.date)}</div>
-                            </>
-                          )}
-                        </div>
-                      ) : (
-                        <span className="text-gray-400">No payment yet</span>
-                      )}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <button
+                        onClick={() => {/* Add view details handler */}}
+                        className="text-blue-600 hover:text-blue-800 font-medium"
+                      >
+                        View
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          {intents.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-500">No payment intents found</p>
+        </div>
+
+        {/* Mobile card view */}
+        <div className="md:hidden space-y-4">
+          {intents.map((intent) => (
+            <div key={intent.id} className="bg-white rounded-lg shadow-sm p-4">
+              <div className="space-y-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">ID: {intent.id.slice(0, 8)}...</p>
+                    <p className="text-sm text-gray-900">ETB {intent.amount.toLocaleString()}</p>
+                  </div>
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(intent.status)}`}>
+                    {intent.status}
+                  </span>
+                </div>
+                <div className="text-sm space-y-1">
+                  <p className="text-gray-900">Customer: {intent.customerEmail}</p>
+                  <p className="text-gray-900">Created: {formatDate(intent.createdAt)}</p>
+                  <p className="text-gray-900">Expires: {formatDate(intent.expiresAt)}</p>
+                </div>
+                <button
+                  onClick={() => {/* Add view details handler */}}
+                  className="w-full mt-2 text-blue-600 hover:text-blue-800 font-medium text-sm"
+                >
+                  View Details
+                </button>
+              </div>
             </div>
-          )}
+          ))}
         </div>
       </div>
     </div>
