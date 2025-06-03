@@ -50,6 +50,7 @@ export async function GET(request: NextRequest) {
         status: true,
         customerEmail: true,
         createdAt: true,
+        expiresAt: true,
         metadata: true,
         payment: {
           select: {
