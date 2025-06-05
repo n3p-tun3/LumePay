@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
   output   = "../app/generated/prisma"
@@ -16,6 +19,7 @@ model User {
   password      String
   emailVerified DateTime?
   image         String?
+  isAdmin       Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
@@ -24,6 +28,8 @@ model User {
   payments      Payment[]
   settings      Json?     // For storing bank details and other settings
   apiKeys       ApiKey[]
+  bankAccount   String?
+  bankName      String?   @default("CBE")
 }
 
 model Account {
@@ -103,4 +109,24 @@ model ApiKey {
 
   @@index([userId])
   @@index([key])
+}
+
+model SystemSettings {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       Json
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model WaitlistEntry {
+  id         String    @id @default(cuid())
+  email      String    @unique
+  name       String?
+  status     String    @default("pending") // pending, approved, rejected
+  notes      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  approvedAt DateTime?
 }

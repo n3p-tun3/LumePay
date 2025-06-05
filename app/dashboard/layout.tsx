@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "../api/auth/auth.config";
+import { authOptions } from "../auth/auth.config";
 import DashboardLayoutClient from "./DashboardLayoutClient";
 
 export default async function DashboardLayout({
