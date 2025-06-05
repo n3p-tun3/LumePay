@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
+import WaitlistConfig from './WaitlistConfig';
 
 interface WaitlistEntry {
   id: string;
@@ -183,7 +184,9 @@ export default function WaitlistAdminClient() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <WaitlistConfig />
+
         <div className="md:flex md:items-center md:justify-between mb-8">
           <div className="flex-1 min-w-0">
             <h2 className="text-3xl font-bold text-gray-900">Waitlist Management</h2>

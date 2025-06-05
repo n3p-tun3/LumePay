@@ -114,10 +114,10 @@ model ApiKey {
 model SystemSettings {
   id          String   @id @default(cuid())
   key         String   @unique
-  value       Json
+  value       Json     // This will store the waitlist config as { enabled: boolean, message: string }
   description String?
-  createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  updatedBy   String?  // Email of the admin who last updated the setting
 }
 
 model WaitlistEntry {

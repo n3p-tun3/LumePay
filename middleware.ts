@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { authOptions } from './app/auth/auth.config';
+import waitlistConfig from './app/config/waitlist.json';
 
 // Cache waitlist status for 5 minutes
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
@@ -17,33 +18,12 @@ async function getWaitlistStatus(request: NextRequest) {
     return waitlistCache.status;
   }
 
-  try {
-    // Use the origin from the request to ensure we're calling the correct API endpoint
-    const response = await fetch(`${request.nextUrl.origin}/api/waitlist/status`, {
-      headers: {
-        'x-middleware-prefetch': '1' // Add header to indicate this is a middleware request
-      },
-      cache: 'no-store' // Disable caching for this request
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch waitlist status');
-    }
-
-    const status = await response.json();
-    waitlistCache = {
-      status,
-      lastUpdated: now
-    };
-    return status;
-  } catch (error) {
-    console.error('Error fetching waitlist status:', error);
-    // Return default status on error
-    return {
-      enabled: false,
-      message: 'We are currently in private beta. Join our waitlist to get early access!'
-    };
-  }
+  // Use the static config directly
+  waitlistCache = {
+    status: waitlistConfig,
+    lastUpdated: now
+  };
+  return waitlistConfig;
 }
 
 export async function middleware(request: NextRequest) {

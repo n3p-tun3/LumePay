@@ -8,8 +8,7 @@ export const runtime = 'edge';
 const CACHE_DURATION = 5 * 60; // 5 minutes in seconds
 
 export async function GET() {
-  // Simply return the static config
-  // In a real app, you would update this file through your admin interface
+  // Return the static config with caching headers
   return NextResponse.json(waitlistConfig, {
     headers: {
       'Cache-Control': `public, s-maxage=${CACHE_DURATION}, stale-while-revalidate=${CACHE_DURATION * 2}`
