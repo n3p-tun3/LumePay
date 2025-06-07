@@ -28,8 +28,6 @@ model User {
   payments      Payment[]
   settings      Json?     // For storing bank details and other settings
   apiKeys       ApiKey[]
-  bankAccount   String?
-  bankName      String?   @default("CBE")
 }
 
 model Account {

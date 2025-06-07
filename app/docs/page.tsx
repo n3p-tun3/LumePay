@@ -10,10 +10,8 @@ export default function DocsPage() {
 
   const sections = [
     { id: 'getting-started', label: 'Getting Started' },
-    { id: 'authentication', label: 'Authentication' },
     { id: 'payment-flow', label: 'Payment Flow' },
-    { id: 'api-reference', label: 'API Reference' },
-    { id: 'sdk', label: 'SDK' },
+    { id: 'sdk', label: 'SDK Reference' },
   ];
 
   return (
@@ -46,9 +44,9 @@ export default function DocsPage() {
       </nav>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-8">
-          {/* Sidebar */}
-          <div className="w-64 flex-shrink-0">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Sidebar - now responsive */}
+          <div className="w-full lg:w-64 flex-shrink-0">
             <nav className="sticky top-8">
               <ul className="space-y-2">
                 {sections.map((section) => (
@@ -69,270 +67,247 @@ export default function DocsPage() {
             </nav>
           </div>
 
-          {/* Main content */}
+          {/* Main content - updated and polished */}
           <div className="flex-1 min-w-0">
-            {activeSection === 'getting-started' && (
-              <div className="prose prose-blue max-w-none">
-                <h1>Getting Started</h1>
-                <p>
-                  Welcome to Lume Pay! This guide will help you integrate our payment verification service into your application.
-                </p>
+            <div className="prose prose-blue max-w-none prose-headings:font-semibold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-gray-600 prose-li:text-gray-600 prose-code:text-blue-600 prose-code:bg-blue-50 prose-code:px-1 prose-code:py-0.5 prose-code:rounded">
+              {activeSection === 'getting-started' && (
+                <>
+                  <h1>Getting Started with Lume Pay</h1>
+                  <p className="text-lg text-gray-700">
+                    Welcome to Lume Pay! This guide will help you integrate our payment verification service into your application quickly and securely.
+                  </p>
 
-                <h2>Prerequisites</h2>
-                <ul>
-                  <li>Node.js 16.x or later</li>
-                  <li>npm or yarn package manager</li>
-                  <li>A Lume Pay account (you can <Link href="/auth/register">sign up here</Link>)</li>
-                </ul>
+                  <h2>Prerequisites</h2>
+                  <ul className="space-y-2">
+                    <li className="flex items-center">
+                      <span className="mr-2">•</span>
+                      <span>Node.js 16.x or later</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="mr-2">•</span>
+                      <span>npm or yarn package manager</span>
+                    </li>
+                    <li className="flex items-center">
+                      <span className="mr-2">•</span>
+                      <span>A Lume Pay account (you can <Link href="/auth/register" className="text-blue-600 hover:text-blue-500">sign up here</Link>)</span>
+                    </li>
+                  </ul>
 
-                <h2>Installation</h2>
-                <p>Install the Lume Pay SDK using npm:</p>
-                <SyntaxHighlighter language="bash" style={tomorrow}>
-                  {`npm install lumepay-sdk`}
-                </SyntaxHighlighter>
+                  <h2>Installation</h2>
+                  <p>Install the Lume Pay SDK using npm or yarn:</p>
+                  <SyntaxHighlighter language="bash" style={tomorrow} className="rounded-lg">
+                    {`npm install lumepay-sdk
+# or
+yarn add lumepay-sdk`}
+                  </SyntaxHighlighter>
 
-                <h2>Quick Start</h2>
-                <p>Here's a simple example of how to use the SDK:</p>
-                <SyntaxHighlighter language="javascript" style={tomorrow}>
-                  {`import PaymentGateway from 'lumepay-sdk';
+                  <h2>Quick Start</h2>
+                  <p>Here's a simple example of how to use the SDK in your application:</p>
+                  <SyntaxHighlighter language="javascript" style={tomorrow} className="rounded-lg">
+                    {`import PaymentGateway from 'lumepay-sdk';
 
 // Initialize the SDK with your API key
 const paymentGateway = new PaymentGateway({
-  apiKey: 'your-api-key',
-  baseUrl: 'https://api.lumepay.com' // or your custom base URL
+  apiKey: 'your-api-key', // Get this from your dashboard
+  baseUrl: 'https://lumepay.pyrrho.dev' // Optional, defaults to this URL
 });
 
 // Create a payment intent
 const intent = await paymentGateway.createIntent({
   amount: 1000, // Amount in ETB
-  customerEmail: 'customer@example.com',
-  metadata: { orderId: '123' }
+  customerEmail: 'customer@example.com', // Required for payment tracking
+  metadata: { orderId: '123' } // Optional, for your reference
 });
 
-// Submit a payment
+// Get your bank details to share with the customer
+const { bankAccount, bankName, accountName } = await paymentGateway.getAccountDetails();
+
+// After customer makes the payment, submit for verification
 const result = await paymentGateway.submitPayment({
   intentId: intent.id,
-  transactionId: 'CBE_TRANSACTION_ID'
+  transactionId: 'TRANSACTION_ID' // Get this from the customer
 });`}
-                </SyntaxHighlighter>
-              </div>
-            )}
+                  </SyntaxHighlighter>
+                </>
+              )}
 
-            {activeSection === 'authentication' && (
-              <div className="prose prose-blue max-w-none">
-                <h1>Authentication</h1>
-                <p>
-                  All API requests to Lume Pay must be authenticated using an API key. You can find your API keys in the dashboard after signing up.
-                </p>
+              {activeSection === 'payment-flow' && (
+                <>
+                  <h1>Payment Flow</h1>
+                  <p className="text-lg text-gray-700">
+                    The Lume Pay payment flow is designed to be simple and secure. Here's how it works:
+                  </p>
 
-                <h2>API Keys</h2>
-                <p>
-                  API keys are used to authenticate your requests. Each key has a limited number of credits that are consumed with each API call.
-                  You can create multiple API keys for different environments or applications.
-                </p>
-
-                <h2>Using API Keys</h2>
-                <p>Include your API key in the Authorization header of your requests:</p>
-                <SyntaxHighlighter language="javascript" style={tomorrow}>
-                  {`// Using fetch
-const response = await fetch('https://api.lumepay.com/api/payment/intent', {
-  headers: {
-    'Authorization': 'Bearer your-api-key',
-    'Content-Type': 'application/json'
-  },
-  // ... other options
-});
-
-// Using the SDK
-const paymentGateway = new PaymentGateway({
-  apiKey: 'your-api-key'
-});`}
-                </SyntaxHighlighter>
-
-                <h2>Security Best Practices</h2>
-                <ul>
-                  <li>Never expose your API keys in client-side code</li>
-                  <li>Rotate your API keys periodically</li>
-                  <li>Use different API keys for development and production</li>
-                  <li>Monitor your API key usage in the dashboard</li>
-                </ul>
-              </div>
-            )}
-
-            {activeSection === 'payment-flow' && (
-              <div className="prose prose-blue max-w-none">
-                <h1>Payment Flow</h1>
-                <p>
-                  The Lume Pay payment flow consists of three main steps: creating a payment intent, customer payment, and payment verification.
-                </p>
-
-                <h2>1. Create Payment Intent</h2>
-                <p>First, create a payment intent with the amount and customer details:</p>
-                <SyntaxHighlighter language="javascript" style={tomorrow}>
-                  {`const intent = await paymentGateway.createIntent({
-  amount: 1000, // Amount in ETB
-  customerEmail: 'customer@example.com',
-  metadata: {
+                  <div className="space-y-8">
+                    <div>
+                      <h2>1. Create Payment Intent</h2>
+                      <p>Start by creating a payment intent with the amount and customer details:</p>
+                      <SyntaxHighlighter language="javascript" style={tomorrow} className="rounded-lg">
+                        {`const intent = await paymentGateway.createIntent({
+  amount: 1000, // Required: Amount in ETB
+  customerEmail: 'customer@example.com', // Required: For payment tracking
+  metadata: { // Optional: For your reference
     orderId: '123',
-    // Add any additional metadata
+    customerName: 'John Doe'
   }
 });`}
-                </SyntaxHighlighter>
+                      </SyntaxHighlighter>
+                      <div className="mt-2 text-sm text-gray-500">
+                        The intent will expire after 24 hours if not paid.
+                      </div>
+                    </div>
 
-                <h2>2. Customer Payment</h2>
-                <p>
-                  After creating the intent, the customer should make the payment through CBE bank using the provided bank details.
-                  You can get the bank details from the intent response:
-                </p>
-                <SyntaxHighlighter language="javascript" style={tomorrow}>
-                  {`// Get bank details from the intent
-const { bankAccount, bankName, accountName } = intent;
+                    <div>
+                      <h2>2. Customer Payment</h2>
+                      <p>
+                        Share your bank details with the customer. They can make the payment through their bank:
+                      </p>
+                      <SyntaxHighlighter language="javascript" style={tomorrow} className="rounded-lg">
+                        {`// Get your bank details from your dashboard settings
+const { bankAccount, bankName, accountName } = await paymentGateway.getAccountDetails();
 
 // Display these details to the customer
 console.log(\`Please send payment to:
 Bank: \${bankName}
 Account: \${bankAccount}
-Name: \${accountName}\`);`}
-                </SyntaxHighlighter>
+Name: \${accountName}
+Amount: \${intent.amount} ETB
+Reference: \${intent.id}\`);`}
+                      </SyntaxHighlighter>
+                      <div className="mt-2 text-sm text-gray-500">
+                        Make sure to include the intent ID as the payment reference for easier tracking.
+                      </div>
+                    </div>
 
-                <h2>3. Payment Verification</h2>
-                <p>
-                  Once the customer has made the payment, submit the transaction ID for verification:
-                </p>
-                <SyntaxHighlighter language="javascript" style={tomorrow}>
-                  {`const result = await paymentGateway.submitPayment({
+                    <div>
+                      <h2>3. Payment Verification</h2>
+                      <p>
+                        Once the customer has made the payment, submit the transaction ID for verification:
+                      </p>
+                      <SyntaxHighlighter language="javascript" style={tomorrow} className="rounded-lg">
+                        {`const result = await paymentGateway.submitPayment({
   intentId: intent.id,
-  transactionId: 'CBE_TRANSACTION_ID' // Get this from the customer
+  transactionId: 'TRANSACTION_ID' // Get this from the customer
 });
 
+// Check the payment status
 if (result.intent.status === 'verified') {
   // Payment verified successfully
   console.log('Payment verified!');
+} else if (result.intent.status === 'pending') {
+  // Payment is being verified
+  console.log('Payment verification in progress...');
 } else {
-  // Payment verification failed or pending
-  console.log('Payment status:', result.intent.status);
+  // Payment verification failed
+  console.log('Payment verification failed:', result.intent.status);
 }`}
-                </SyntaxHighlighter>
+                      </SyntaxHighlighter>
+                    </div>
 
-                <h2>Webhooks</h2>
-                <p>
-                  You can also receive real-time updates about payment status changes through webhooks.
-                  Configure your webhook URL in the dashboard to receive these notifications.
-                </p>
-              </div>
-            )}
+                    <div>
+                      <h2>Webhooks</h2>
+                      <p>
+                        For real-time updates, configure webhooks in your dashboard. You'll receive notifications for:
+                      </p>
+                      <ul className="list-disc pl-6 space-y-2">
+                        <li>Payment verification status changes</li>
+                        <li>Intent expiration</li>
+                        <li>Error notifications</li>
+                      </ul>
+                      <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                        <p className="text-sm text-blue-700">
+                          💡 Tip: Always verify webhook signatures to ensure they're coming from Lume Pay.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
 
-            {activeSection === 'api-reference' && (
-              <div className="prose prose-blue max-w-none">
-                <h1>API Reference</h1>
-                <p>
-                  The Lume Pay API is RESTful and uses standard HTTP methods and status codes.
-                  All requests should be made to the base URL: <code>https://api.lumepay.com</code>
-                </p>
+              {activeSection === 'sdk' && (
+                <>
+                  <h1>SDK Reference</h1>
+                  <p className="text-lg text-gray-700">
+                    The Lume Pay SDK provides a simple and secure way to integrate payment verification into your application.
+                  </p>
 
-                <h2>Endpoints</h2>
-
-                <h3>Create Payment Intent</h3>
-                <SyntaxHighlighter language="bash" style={tomorrow}>
-                  {`POST /api/payment/intent
-Content-Type: application/json
-Authorization: Bearer your-api-key
-
-{
-  "amount": 1000,
-  "customerEmail": "customer@example.com",
-  "metadata": {
-    "orderId": "123"
-  }
-}`}
-                </SyntaxHighlighter>
-
-                <h3>Get Payment Intent</h3>
-                <SyntaxHighlighter language="bash" style={tomorrow}>
-                  {`GET /api/payment/intent/{intentId}
-Authorization: Bearer your-api-key`}
-                </SyntaxHighlighter>
-
-                <h3>Submit Payment</h3>
-                <SyntaxHighlighter language="bash" style={tomorrow}>
-                  {`POST /api/payment/intent/{intentId}/pay
-Content-Type: application/json
-Authorization: Bearer your-api-key
-
-{
-  "transactionId": "CBE_TRANSACTION_ID"
-}`}
-                </SyntaxHighlighter>
-
-                <h2>Response Codes</h2>
-                <ul>
-                  <li><code>200</code> - Success</li>
-                  <li><code>400</code> - Bad Request</li>
-                  <li><code>401</code> - Unauthorized</li>
-                  <li><code>403</code> - Forbidden (insufficient credits)</li>
-                  <li><code>404</code> - Not Found</li>
-                  <li><code>429</code> - Too Many Requests</li>
-                  <li><code>500</code> - Internal Server Error</li>
-                </ul>
-              </div>
-            )}
-
-            {activeSection === 'sdk' && (
-              <div className="prose prose-blue max-w-none">
-                <h1>SDK Reference</h1>
-                <p>
-                  The Lume Pay SDK provides a simple interface to interact with our API.
-                  It handles authentication, request formatting, and response parsing.
-                </p>
-
-                <h2>Installation</h2>
-                <SyntaxHighlighter language="bash" style={tomorrow}>
-                  {`npm install lumepay-sdk
+                  <h2>Installation</h2>
+                  <SyntaxHighlighter language="bash" style={tomorrow} className="rounded-lg">
+                    {`npm install lumepay-sdk
 # or
 yarn add lumepay-sdk`}
-                </SyntaxHighlighter>
+                  </SyntaxHighlighter>
 
-                <h2>Configuration</h2>
-                <SyntaxHighlighter language="javascript" style={tomorrow}>
-                  {`import PaymentGateway from 'lumepay-sdk';
+                  <h2>Configuration</h2>
+                  <p>Initialize the SDK with your API key:</p>
+                  <SyntaxHighlighter language="javascript" style={tomorrow} className="rounded-lg">
+                    {`import PaymentGateway from 'lumepay-sdk';
 
 const paymentGateway = new PaymentGateway({
-  apiKey: 'your-api-key',
-  baseUrl: 'https://api.lumepay.com', // optional
-  timeout: 30000 // optional, in milliseconds
+  apiKey: 'your-api-key', // Required: Get this from your dashboard
+  baseUrl: 'https://lumepay.pyrrho.dev' // Optional: Defaults to this URL
 });`}
-                </SyntaxHighlighter>
+                  </SyntaxHighlighter>
 
-                <h2>Methods</h2>
-
-                <h3>createIntent(options)</h3>
-                <p>Creates a new payment intent.</p>
-                <SyntaxHighlighter language="javascript" style={tomorrow}>
-                  {`const intent = await paymentGateway.createIntent({
-  amount: number, // required, amount in ETB
-  customerEmail: string, // required
-  metadata?: object // optional
+                  <h2>Available Methods</h2>
+                  
+                  <div className="space-y-8">
+                    <div>
+                      <h3>createIntent(options)</h3>
+                      <p>Creates a new payment intent.</p>
+                      <SyntaxHighlighter language="javascript" style={tomorrow} className="rounded-lg">
+                        {`const intent = await paymentGateway.createIntent({
+  amount: number,      // Required: Amount in ETB
+  customerEmail: string, // Required: For payment tracking
+  metadata?: object    // Optional: For your reference
 });`}
-                </SyntaxHighlighter>
+                      </SyntaxHighlighter>
+                      <div className="mt-2 text-sm text-gray-500">
+                        Returns a payment intent object with a unique ID and status.
+                      </div>
+                    </div>
 
-                <h3>getIntent(intentId)</h3>
-                <p>Retrieves a payment intent by ID.</p>
-                <SyntaxHighlighter language="javascript" style={tomorrow}>
-                  {`const intent = await paymentGateway.getIntent('intent-id');`}
-                </SyntaxHighlighter>
+                    <div>
+                      <h3>getIntent(intentId)</h3>
+                      <p>Retrieves a payment intent by ID.</p>
+                      <SyntaxHighlighter language="javascript" style={tomorrow} className="rounded-lg">
+                        {`const intent = await paymentGateway.getIntent('intent-id');`}
+                      </SyntaxHighlighter>
+                      <div className="mt-2 text-sm text-gray-500">
+                        Use this to check the status of a payment intent.
+                      </div>
+                    </div>
 
-                <h3>submitPayment(options)</h3>
-                <p>Submits a payment for verification.</p>
-                <SyntaxHighlighter language="javascript" style={tomorrow}>
-                  {`const result = await paymentGateway.submitPayment({
-  intentId: string, // required
-  transactionId: string // required
+                    <div>
+                      <h3>submitPayment(options)</h3>
+                      <p>Submits a payment for verification.</p>
+                      <SyntaxHighlighter language="javascript" style={tomorrow} className="rounded-lg">
+                        {`const result = await paymentGateway.submitPayment({
+  intentId: string,      // Required: The payment intent ID
+  transactionId: string  // Required: The bank transaction ID
 });`}
-                </SyntaxHighlighter>
+                      </SyntaxHighlighter>
+                      <div className="mt-2 text-sm text-gray-500">
+                        Returns the updated payment intent with verification status.
+                      </div>
+                    </div>
 
-                <h2>Error Handling</h2>
-                <SyntaxHighlighter language="javascript" style={tomorrow}>
-                  {`try {
+                    <div>
+                      <h3>getAccountDetails()</h3>
+                      <p>Retrieves your bank account details.</p>
+                      <SyntaxHighlighter language="javascript" style={tomorrow} className="rounded-lg">
+                        {`const { bankAccount, bankName, accountName } = await paymentGateway.getAccountDetails();`}
+                      </SyntaxHighlighter>
+                      <div className="mt-2 text-sm text-gray-500">
+                        Use this to get your bank details to share with customers.
+                      </div>
+                    </div>
+                  </div>
+
+                  <h2>Error Handling</h2>
+                  <p>All methods throw a <code>PaymentGatewayError</code> when something goes wrong:</p>
+                  <SyntaxHighlighter language="javascript" style={tomorrow} className="rounded-lg">
+                    {`try {
   const intent = await paymentGateway.createIntent({
     amount: 1000,
     customerEmail: 'customer@example.com'
@@ -342,13 +317,26 @@ const paymentGateway = new PaymentGateway({
     console.error('Not enough credits to create payment intent');
   } else if (error.code === 'INVALID_API_KEY') {
     console.error('Invalid API key');
+  } else if (error.code === 'BANK_DETAILS_NOT_FOUND') {
+    console.error('Please set up your bank details in the dashboard');
   } else {
     console.error('An error occurred:', error.message);
   }
 }`}
-                </SyntaxHighlighter>
-              </div>
-            )}
+                  </SyntaxHighlighter>
+
+                  <div className="mt-8 p-4 bg-blue-50 rounded-lg">
+                    <h3 className="text-lg font-semibold text-blue-900">Best Practices</h3>
+                    <ul className="mt-2 space-y-2 text-sm text-blue-700">
+                      <li>• Always handle errors appropriately in your application</li>
+                      <li>• Store API keys securely and never expose them in client-side code</li>
+                      <li>• Use webhooks for real-time payment status updates</li>
+                      <li>• Include the intent ID as payment reference for easier tracking</li>
+                    </ul>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
