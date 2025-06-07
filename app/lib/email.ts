@@ -60,7 +60,7 @@ export async function sendWelcomeEmail(email: string, name: string | null, passw
 
 export async function sendPasswordResetEmail(email: string, name: string | null, token: string) {
   try {
-    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password?token=${token}`;
+    const resetUrl = `${process.env.NEXT_PUBLIC_API_URL}/auth/reset-password?token=${token}`;
     
     const { data, error } = await resend.emails.send({
       from: 'Lume Pay <noreply@pyrrho.dev>',
