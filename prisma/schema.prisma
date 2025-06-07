@@ -28,6 +28,7 @@ model User {
   payments      Payment[]
   settings      Json?     // For storing bank details and other settings
   apiKeys       ApiKey[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model Account {
@@ -127,4 +128,12 @@ model WaitlistEntry {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   approvedAt DateTime?
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
