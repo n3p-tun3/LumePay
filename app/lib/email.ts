@@ -32,7 +32,7 @@ export async function sendWelcomeEmail(email: string, name: string | null, passw
           
           <p>You can now:</p>
           <ul>
-            <li>Log in to your account at <a href="${process.env.NEXT_PUBLIC_API_URL}/auth/login">${process.env.NEXT_PUBLIC_APP_URL}/auth/login</a></li>
+            <li>Log in to your account at <a href="${process.env.NEXT_PUBLIC_API_URL}/auth/login">${process.env.NEXT_PUBLIC_API_URL}/auth/login</a></li>
             <li>Update your name in Settings to match your bank account</li>
             <li>Set up your bank account details</li>
             <li>Generate your API key</li>

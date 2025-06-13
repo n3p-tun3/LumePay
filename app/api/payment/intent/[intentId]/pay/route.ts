@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@/app/generated/prisma";
 import axios from 'axios';
+import { webhookService } from '@/app/lib/webhook';
 
 const prisma = new PrismaClient();
 const VERIFICATION_SERVICE_URL = process.env.VERIFICATION_SERVICE_URL || 'http://localhost:8000';
@@ -208,10 +209,10 @@ export async function POST(
       }
     });
 
-    // TODO: Trigger webhook asynchronously
-    // webhookService.sendWebhook(intent.userId, payment).catch(error => {
-    //   console.error('Webhook delivery error:', error);
-    // });
+    // Trigger webhook asynchronously
+    webhookService.sendWebhook(intent.userId, payment).catch(error => {
+      console.error('Webhook delivery error:', error);
+    });
 
     return NextResponse.json({ 
       success: true,

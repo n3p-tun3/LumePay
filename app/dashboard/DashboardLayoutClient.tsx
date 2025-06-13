@@ -1,6 +1,6 @@
 'use client';
 
-import { HomeIcon, CreditCardIcon, KeyIcon, Cog6ToothIcon, Bars3Icon, XMarkIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, CreditCardIcon, KeyIcon, Cog6ToothIcon, Bars3Icon, XMarkIcon, UserGroupIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -36,6 +36,7 @@ export default function DashboardLayoutClient({
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
     { name: 'Payments', href: '/dashboard/payments', icon: CreditCardIcon },
     { name: 'API Key', href: '/dashboard/api-key', icon: KeyIcon },
+    { name: "Webhooks", href: "/dashboard/webhooks", icon: ArrowPathIcon },
     { name: 'Settings', href: '/dashboard/settings', icon: Cog6ToothIcon },
     ...(isAdmin ? [{ name: 'Waitlist', href: '/dashboard/admin/waitlist', icon: UserGroupIcon }] : []),
   ];
