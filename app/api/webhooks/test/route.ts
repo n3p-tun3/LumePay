@@ -27,11 +27,25 @@ export async function POST() {
       }, { status: 400 });
     }
 
+    // Create a test intent record
+    const testIntent = await prisma.intent.create({
+        data: {
+          userId: session.user.id,
+          amount: 100, // Test amount
+          status: 'completed',
+          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
+          metadata: {
+            test: true,
+            timestamp: new Date().toISOString()
+          }
+        }
+      });
+
     // Create a test payment record
     const testPayment = await prisma.payment.create({
       data: {
         userId: session.user.id,
-        intentId: 'test-' + Date.now(), // Temporary intent ID
+        intentId: testIntent.id,
         amount: 100, // Test amount
         transactionId: 'test-' + Date.now(), // Temporary transaction ID
         status: 'completed',
@@ -51,6 +65,10 @@ export async function POST() {
         where: { id: testPayment.id }
       });
 
+      await prisma.intent.delete({
+        where: { id: testIntent.id }
+      });
+
       return NextResponse.json({ 
         message: "Test webhook sent successfully" 
       });
@@ -58,6 +76,9 @@ export async function POST() {
       // Clean up test payment even if webhook fails
       await prisma.payment.delete({
         where: { id: testPayment.id }
+      });
+      await prisma.intent.delete({
+        where: { id: testIntent.id }
       });
       throw error;
     }
